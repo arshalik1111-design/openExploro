@@ -9,9 +9,16 @@ const listingSchema = new Schema({
     },
     description: String,
     image: {
-        type: String,
-        default: "https://images.pexels.com/photos/358636/pexels-photo-358636.jpeg",
-        set: ((v) => v === " " ? "https://images.pexels.com/photos/358636/pexels-photo-358636.jpeg" : v),
+        filename: {
+            type: String,
+            default: "https://images.pexels.com/photos/358636/pexels-photo-358636.jpeg",
+        },
+        url: {
+            default: "https://images.pexels.com/photos/358636/pexels-photo-358636.jpeg",
+            type: String,
+            set: ((v) => v === " " ? "https://images.pexels.com/photos/358636/pexels-photo-358636.jpeg" : v),
+        }
+
     },
     price: Number,
     location: String,
