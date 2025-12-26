@@ -11,17 +11,13 @@ const listingSchema = new Schema({
   image: {
     filename: {
       type: String,
-      default:
-        "https://images.pexels.com/photos/358636/pexels-photo-358636.jpeg",
+      default: "listingimage",
     },
     url: {
-      default:
-        "https://images.pexels.com/photos/358636/pexels-photo-358636.jpeg",
       type: String,
-      set: (v) =>
-        v === " "
-          ? "https://images.pexels.com/photos/358636/pexels-photo-358636.jpeg"
-          : v,
+      default: "https://plus.unsplash.com/premium_photo-1661913412680-c274b6fea096?q=80&w=1031&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      // The setter should check for an empty string OR an undefined value
+      set: (v) => v === "" ? "https://plus.unsplash.com/premium_photo-1661913412680-c274b6fea096?q=80&w=1031&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" : v,
     },
   },
   price: Number,
