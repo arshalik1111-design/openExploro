@@ -36,3 +36,15 @@ textarea {
   border-radius: 0.5rem;
   padding: 1%;
 }
+
+.navbar {
+  height: 5rem;
+}
+.fa-compass {
+  color: #fe424d;
+  font-size: 2rem;
+}
+
+.nav-link{
+  color: #222222 !important;
+}
