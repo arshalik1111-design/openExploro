@@ -1,0 +1,38 @@
+body {
+  background-color: black;
+  color: rgb(255, 195, 121);
+}
+
+a {
+  text-decoration: none;
+  color: rgb(255, 210, 156);
+}
+button {
+  border: none;
+  background-color: bisque;
+  color: brown;
+  border-radius: 2rem;
+  padding: 1%;
+  font-weight: bolder;
+}
+button:hover {
+  cursor: pointer;
+}
+input {
+  border: none;
+  background-color: bisque;
+  color: brown;
+  border-radius: 0.2rem;
+  padding: 1%;
+}
+::placeholder{
+    color: brown;
+}
+
+textarea {
+  border: none;
+  background-color: bisque;
+  color: brown;
+  border-radius: 0.5rem;
+  padding: 1%;
+}
