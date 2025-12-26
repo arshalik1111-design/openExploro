@@ -25,8 +25,8 @@ input {
   border-radius: 0.2rem;
   padding: 1%;
 }
-::placeholder{
-    color: brown;
+::placeholder {
+  color: brown;
 }
 
 textarea {
@@ -45,6 +45,6 @@ textarea {
   font-size: 2rem;
 }
 
-.nav-link{
+.nav-link {
   color: #222222 !important;
 }
