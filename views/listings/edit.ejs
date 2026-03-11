@@ -4,7 +4,12 @@
   <div class="col-8 offset-2">
     <h2>Edit your listing</h2>
 
-    <form action="/listings/<%=listing._id%>?_method=PUT" method="post">
+    <form
+      action="/listings/<%=listing._id%>?_method=PUT"
+      method="post"
+      novalidate
+      class="needs-validation"
+    >
       <div class="mb-3">
         <label for="title" class="form-label">Title</label>
 
@@ -13,6 +18,7 @@
           value="<%=listing.title%>"
           type="text"
           class="form-control"
+          required
         />
       </div>
 
@@ -22,8 +28,9 @@
         <textarea
           class="form-control"
           name="listing[description]"
-          rows="10"
+          rows="5"
           cols="40"
+          required
         >
 <%=listing.description%>
        
@@ -49,6 +56,7 @@
           name="listing[price]"
           value="<%=listing.price%>"
           type="text"
+          required
         />
       </div>
       <div class="mb-3">
@@ -59,6 +67,7 @@
           name="listing[country]"
           value="<%=listing.country%>"
           type="text"
+          required
         />
       </div>
 
@@ -70,6 +79,7 @@
           name="listing[location]"
           value="<%=listing.location%>"
           type="text"
+          required
         />
       </div>
       <button class="btn edit-btn">Edit</button>
@@ -77,3 +87,5 @@
     <br /><br />
   </div>
 </div>
+
+<script src="/js/script.js"></script>
