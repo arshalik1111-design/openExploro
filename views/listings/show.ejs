@@ -1,31 +1,69 @@
 <% layout("/layouts/boilerplate") %>
 
-    <div class="row mt-3">
+<div class="row mt-3">
+  <div class="col-8 offset-2">
+    <h3><b><%= listing.title%></b></h3>
 
-      <div class="col-8 offset-2">
-    <h3>Lisitng Details</h3>
+    <div class="card cols mt-3">
+      <img
+        src="<%= listing.image.url%>"
+        class="card-img-top show-img"
+        alt="listing-image"
+      />
+      <div class="card-body mt-3">
+        <p class="card-text">
+          <%= listing.description%>
+          <br />
+          Price: &#8377; <%=listing.price.toLocaleString("en-IN")%> / night
+          <br />
+          Location: <%= listing.location%>
+          <br />
+          Country: <%= listing.country%>
+        </p>
+      </div>
+    </div>
 
-<div class="card cols mt-3" >
-  <img src="<%= listing.image.url%>"  class="card-img-top show-img" alt="listing-image">
-  <div class="card-body mt-3">
-    <h5 class="card-title"><b><%= listing.title%></b></h5>
-    <p class="card-text"><%= listing.description%>
-    <br>
- Price:  &#8377 <%=listing.price.toLocaleString("en-IN")%> / night
-    <br>
-    Location: 
-  <%= listing.location%>
-    <br>
-    Country: 
-  <%= listing.country%></p>
-  </div>
-</div>
- 
-  <div class="show-btns">
-      <a href="/listings/<%=listing._id%>/edit"><button class="update-btn">Edit this listing</button></a>
-    <form action="/listings/<%=listing._id%>?_method=DELETE" method="post">
+    <div class="show-btns">
+      <a href="/listings/<%=listing._id%>/edit"
+        ><button class="update-btn">Edit this listing</button></a
+      >
+      <form action="/listings/<%=listing._id%>?_method=DELETE" method="post">
         <button class="dlt-btn">Delete this listing</button>
+      </form>
+    </div>
+  </div>
+  <br />
+  <div class="col-8 offset-2 mt-3 mb-3">
+    <form
+      action="/listings/<%=listing._id%>/reviews"
+      method="post"
+      novalidate
+      class="needs-validation"
+    >
+      <label for="range" class="form-label"><h4>Reviews</h4></label>
+      <input
+        type="range"
+        class="form-range"
+        min="1"
+        max="5"
+        value="3"
+        id="range"
+        name="review[rating]"
+      />
+      <output for="range" id="rangeValue" aria-hidden="true"></output>
+
+      <div class="mb-3 mt-3">
+        <label for="comment"><h4>Comments</h4></label>
+        <textarea
+          name="review[comment]"
+          id="comment"
+          rows="5"
+          cols="81"
+          required
+        ></textarea>
+        <div class="invalid-feedback">Please add some comments for review</div>
+      </div>
+      <button type="submit" class="btn btn-dark">Submit</button>
     </form>
   </div>
-    </div>
-    </div>
+</div>
