@@ -25,7 +25,7 @@ const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 
 
-const { listingSchema } = require("./schema.js");
+const { listingSchema, reviewSchema } = require("./schema.js");
 const review = require("./models/review.js");
 const { log } = require("console");
 const MONGO_URL = "mongodb://127.0.0.1:27017/openExploro";
@@ -48,7 +48,18 @@ const validateListing = (req, res, next) => {
   } else {
     next();
   }
+};
+
+const validateReview = (req, res, next) => {
+  let { error } = reviewSchema.validate(req.body);
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, error);
+  } else {
+    next();
+  }
 }
+
 
 
 //Index Route
@@ -64,7 +75,7 @@ app.get("/listings/new", (req, res) => {
 //Show route
 app.get("/listings/:id", wrapAsync(async (req, res) => {
   let { id } = req.params;
-  const listing = await Listing.findById(id);
+  const listing = await Listing.findById(id).populate("reviews");
   res.render("listings/show.ejs", { listing });
 }));
 
@@ -99,8 +110,8 @@ app.delete("/listings/:id", wrapAsync(async (req, res) => {
 
 
 // Reviews Route 
-
-app.post("/listings/:id/reviews", async (req, res) => {
+//  Post route
+app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
   // First we get the id of the listing in whcih we have to add review
   let listing = await Listing.findById(req.params.id);
   // We create a newReview, and pass review in it that came from show.ejs
@@ -110,12 +121,12 @@ app.post("/listings/:id/reviews", async (req, res) => {
 
   await newReview.save();
   await listing.save();
-  res.redirect("/listings");
+  res.redirect(`/listings/${listing._id}`);
 
   // console.log("New review saved");
   // res.send("new review saved")
 
-})
+}));
 app.get("/", (req, res) => {
   res.send("Hi I'm root");
 });
@@ -139,7 +150,7 @@ app.all("*splat", (req, res, next) => {
 app.use((err, req, res, next) => {
   // Set default values in case err.statusCode or err.message are missing
   let { statusCode = 500, message = "Something went wrong" } = err;
-  res.render("error.ejs", { message });
+  res.status(statusCode).render("error.ejs", { message });
   // res.status(statusCode).send(message);
 });
 app.listen("8080", () => {
