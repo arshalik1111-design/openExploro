@@ -1,9 +1,6 @@
 const express = require("express");
 const app = express();
-
 process.setMaxListeners(20); // Increase from 10 to 20
-
-
 const mongoose = require("mongoose");
 const Listing = require("./models/listing.js");
 const Review = require("./models/Review.js");
@@ -18,18 +15,13 @@ app.set("views", path.join(__dirname, "views"));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
-
-
-
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-
-
 const { listingSchema, reviewSchema } = require("./schema.js");
 const review = require("./models/review.js");
 const { log } = require("console");
 const listings = require("./routes/listing.js");
-
+const reviews = require("./routes/review.js");
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/openExploro";
 main()
@@ -43,72 +35,12 @@ async function main() {
   await mongoose.connect(MONGO_URL);
 }
 
-
-
-const validateReview = (req, res, next) => {
-  let { error } = reviewSchema.validate(req.body);
-  if (error) {
-    let errMsg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(400, error);
-  } else {
-    next();
-  }
-}
-
-
 app.use("/listings", listings);
+app.use("/listings/:id/reviews", reviews);
 
-
-
-
-// Reviews Route 
-//  Post Review route
-app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
-  // First we get the id of the listing in whcih we have to add review
-  let listing = await Listing.findById(req.params.id);
-  // We create a newReview, and pass review in it that came from show.ejs
-  let newReview = new Review(req.body.review);
-
-  listing.reviews.push(newReview);
-
-  await newReview.save();
-  await listing.save();
-  res.redirect(`/listings/${listing._id}`);
-
-  // console.log("New review saved");
-  // res.send("new review saved")
-
-}));
-
-
-// Delete Review Route
-
-
-app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async (req, res) => {
-  let { id, reviewId } = req.params;
-
-  await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-
-  await Review.findByIdAndDelete(reviewId);
-
-  res.redirect(`/listings/${id}`);
-
-}));
 app.get("/", (req, res) => {
   res.send("Hi I'm root");
 });
-// app.get("/testListing", wrapAsync(async (req, res) => {
-//   let sampleListing = new Listing({
-//     title: "My New Villa",
-//     descripttion: "Simple and sleek with a garden",
-//     price: 1200,
-//     location: "Near Bengalore Palace",
-//     country: "India",
-//   });
-//   await sampleListing.save();
-//   console.log("Sample was saved");
-//   res.send("Successful testing");
-// }));
 
 
 app.all("*splat", (req, res, next) => {
