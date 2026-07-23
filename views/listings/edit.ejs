@@ -5,10 +5,10 @@
     <h2>Edit your listing</h2>
 
     <form
-      action="/listings/<%=listing._id%>?_method=PUT"
-      method="post"
-      novalidate
+      action="/listings/<%= listing._id %>?_method=PUT"
+      method="POST"
       class="needs-validation"
+      novalidate
     >
       <div class="mb-3">
         <label for="title" class="form-label">Title</label>
@@ -82,7 +82,7 @@
           required
         />
       </div>
-      <button class="btn edit-btn">Edit</button>
+      <button class="btn edit-btn">Save</button>
     </form>
     <br /><br />
   </div>
