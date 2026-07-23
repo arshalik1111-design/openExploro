@@ -6,7 +6,7 @@ process.setMaxListeners(20); // Increase from 10 to 20
 
 const mongoose = require("mongoose");
 const Listing = require("./models/listing.js");
-const Review = require("./models/review.js");
+const Review = require("./models/Review.js");
 
 const ejsMate = require("ejs-mate");
 const path = require("path");
@@ -110,7 +110,7 @@ app.delete("/listings/:id", wrapAsync(async (req, res) => {
 
 
 // Reviews Route 
-//  Post route
+//  Post Review route
 app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
   // First we get the id of the listing in whcih we have to add review
   let listing = await Listing.findById(req.params.id);
@@ -125,6 +125,21 @@ app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => 
 
   // console.log("New review saved");
   // res.send("new review saved")
+
+}));
+
+
+// Delete Review Route
+
+
+app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async (req, res) => {
+  let { id, reviewId } = req.params;
+
+  await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+
+  await Review.findByIdAndDelete(reviewId);
+
+  res.redirect(`/listings/${id}`);
 
 }));
 app.get("/", (req, res) => {
