@@ -2,38 +2,39 @@ const express = require("express");
 const app = express();
 const users = require("./routes/user.js");
 const posts = require("./routes/post.js");
-const cookieParser = require("cookie-parser");
+const session = require("express-session");
 
-app.use(cookieParser("secretCode"));
+const sessionOptions = {
+    secret: "mysecret", resave: false, saveUninitialized: true,
+};
+// Saves a session id in each request(get,post..) in the form of a cookie.
+app.use(session(sessionOptions));
 
-app.get("/getSignedCookie", (req, res) => {
-    res.cookie("made-In", "India", { signed: true });
-    res.send("Signed Cookie send")
+
+
+app.get("/register", (req, res) => {
+    let { name = "anonymous" } = req.query;
+    req.session.name = name;
+    res.redirect("/hello");
 });
 
-app.get("/verify", (req, res) => {
-    console.log(req.signedCookies);
-    res.send("Verifies cookie")
-})
-app.get("/getCookies", (req, res) => {
-    res.cookie("greet", "hello"); //Key Value pairs
-    res.cookie("madeIN", "India"); //Key Value pairs
-    res.send("Sent you cookies");
+app.get("/hello", (req, res) => {
+    res.send(`Hello ${req.session.name}`);
 });
 
-app.get("/greet", (req, res) => {
-    let { name = "anonymous" } = req.cookies;
-    res.send(`Hi ${name}`);
-});
-app.get("/", (req, res) => {
-    console.log(req.cookies);
-    res.send("hi I'm root");
-});
 
-// Users
-app.use("/users", users);
-// Posts
-app.use("/posts", posts);
+// app.get("/reqcount", (req, res) => {
+//     if (req.session.count) {
+//         req.session.count++;
+//     } else {
+//         req.session.count = 1;
+//     }
+
+//     res.send(`You sent a request ${req.session.count} times`);
+// });
+// app.get("/test", (req, res) => {
+//     res.send("test successful");
+// });
 
 
 app.listen(3000, () => {
