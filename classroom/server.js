@@ -3,23 +3,35 @@ const app = express();
 const users = require("./routes/user.js");
 const posts = require("./routes/post.js");
 const session = require("express-session");
+const flash = require("connect-flash");
+const path = require("path");
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 const sessionOptions = {
     secret: "mysecret", resave: false, saveUninitialized: true,
 };
 // Saves a session id in each request(get,post..) in the form of a cookie.
 app.use(session(sessionOptions));
-
+app.use(flash());
 
 
 app.get("/register", (req, res) => {
     let { name = "anonymous" } = req.query;
     req.session.name = name;
+    if (name == "anonymous") {
+        req.flash("error", "user not registered");
+
+    } else {
+        req.flash("success", "user registered succesfully");
+    }
     res.redirect("/hello");
 });
 
 app.get("/hello", (req, res) => {
-    res.send(`Hello ${req.session.name}`);
+    res.locals.successMsg = req.flash("success");
+    res.locals.errorMsg = req.flash("error");
+    res.render("page.ejs", { name: req.session.name });
 });
 
 
