@@ -14,7 +14,11 @@ const sessionOptions = {
 // Saves a session id in each request(get,post..) in the form of a cookie.
 app.use(session(sessionOptions));
 app.use(flash());
-
+app.use((req, res, next) => {
+    res.locals.successMsg = req.flash("success");
+    res.locals.errorMsg = req.flash("error ");
+    next();
+});
 
 app.get("/register", (req, res) => {
     let { name = "anonymous" } = req.query;
@@ -29,8 +33,6 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/hello", (req, res) => {
-    res.locals.successMsg = req.flash("success");
-    res.locals.errorMsg = req.flash("error");
     res.render("page.ejs", { name: req.session.name });
 });
 
