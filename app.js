@@ -13,8 +13,9 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 // Import Routers
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js");
+const listingRouter = require("./routes/listing.js");
+const reviewRouter = require("./routes/review.js");
+const userRouter = require("./routes/user.js");
 
 // Database Connection
 const MONGO_URL = "mongodb://127.0.0.1:27017/openExploro";
@@ -88,9 +89,9 @@ app.get("/", (req, res) => {
   res.send("Hi I'm root");
 });
 
-app.use("/listings", listings);
-app.use("/listings/:id/reviews", reviews);
-
+app.use("/listings", listingRouter);
+app.use("/listings/:id/reviews", reviewRouter);
+app.use("/", userRouter);
 app.all("*splat", (req, res, next) => {
   next(new ExpressError(404, "Page not Found"));
 });
