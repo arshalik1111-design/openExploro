@@ -4,6 +4,7 @@ const router = express.Router();
 const passport = require("passport");
 
 const User = require("../models/user.js");
+const { saveRedirectUrl } = require("../middleware.js");
 
 router.get("/signup", (req, res) => {
     res.render("users/signup.ejs");
@@ -15,8 +16,14 @@ router.post("/signup", async (req, res) => {
         let { username, email, password } = req.body;
         const newUser = new User({ email, username });
         const registeredUser = await User.register(newUser, password);
-        req.flash("success", "Chalo kaha rukna hai ab");
-        res.redirect("/listings");
+        req.login(registeredUser, (err) => {
+            if (err) {
+                return next(err);
+            }
+            req.flash("success", "Chalo kaha rukna hai ab");
+            res.redirect("/listings");
+        })
+
     } catch (e) {
 
         req.flash("error", e.message);
@@ -30,14 +37,15 @@ router.get("/login", (req, res) => {
 });
 
 
-router.post("/login", passport.authenticate("local", { failureRedirect: '/login', failureFlash: true }), async (req, res) => {
+router.post("/login",
+    saveRedirectUrl, passport.authenticate("local", { failureRedirect: '/login', failureFlash: true }),
 
-    req.flash("success", "Login hogya, chalo ab decide karlo kaha rukna hai");
+    async (req, res) => {
 
-    res.redirect("/listings");
+        req.flash("success", "Login hogya, chalo ab decide karlo kaha rukna hai");
 
-
-});
+        res.redirect(req.locals.redirectUrl);
+    });
 router.get("/logout", (req, res, next) => {
 
     req.logout((err) => {
