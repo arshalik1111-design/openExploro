@@ -35,17 +35,18 @@ router.post("/login", passport.authenticate("local", { failureRedirect: '/login'
     req.flash("success", "Login hogya, chalo ab decide karlo kaha rukna hai");
 
     res.redirect("/listings");
-    // try {
-    //     let { username, email, password } = req.body;
-    //     const newUser = new User({ email, username });
-    //     const registeredUser = await User.register(newUser, password);
-    //     req.flash("success", "Chalo kaha rukna hai ab");
-    //     res.redirect("/listings");
-    // } catch (e) {
 
-    //     req.flash("error", e.message);
-    //     res.redirect("/signup");
-    // }
+
+});
+router.get("/logout", (req, res, next) => {
+
+    req.logout((err) => {
+        if (err) {
+            return next(err);
+        }
+        req.flash("success", "you are logged out!");
+        res.redirect("/listings");
+    })
 
 });
 module.exports = router;
